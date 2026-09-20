@@ -84,6 +84,7 @@
     </div>
 
     <script type="application/json" id="{{ resolvedMapId }}-config">{{ mapData | json | safe }}</script>
+    <script type="application/json" id="{{ resolvedMapId }}-places">{{ app.places | json | safe }}</script>
     <script type="application/json" id="{{ resolvedMapId }}-vegetation">{{ app.vegetation.classes | json | safe }}</script>
   </section>
 {% endif %}

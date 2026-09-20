@@ -20,8 +20,6 @@ permalink: /
   {% set mapData = app.map %}
   {% set mapId = "taiwan-ecosystem-map" %}
   {% include "leaflet-map.njk" %}
-
-  <script type="application/json" id="{{ mapId }}-places">{{ app.places | json | safe }}</script>
 {% endblock %}
 
 {% block extraScripts %}

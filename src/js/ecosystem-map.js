@@ -306,9 +306,8 @@
               userMarker = L.marker(latlng).addTo(map);
             }
 
-            userMarker.bindPopup("You are here.").openPopup();
             map.setView([latlng.lat, latlng.lng], Math.max(map.getZoom(), 12));
-            inspectLocation(latlng, { keepPopup: false, placeName: "Your location" });
+            inspectLocation(latlng, { keepPopup: true, placeName: "Your location" });
           },
           (error) => {
             statusElement.textContent = `Location unavailable: ${error.message}`;
