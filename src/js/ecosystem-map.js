@@ -41,6 +41,15 @@
   };
 
   const OFFICIAL_CODE_MIN = 12;
+  const ZONE_MATCHERS = [
+    ["亞高山", "Subalpine"],
+    ["高山", "Alpine"],
+    ["上部山地", "Upper montane"],
+    ["下部山地", "Lower montane"],
+    ["山地", "Montane"],
+    ["低地", "Lowland"],
+    ["海岸", "Coastal"],
+  ];
 
   function escapeHtml(value) {
     return String(value)
@@ -52,13 +61,13 @@
 
   function describeZone(name) {
     if (!name) return "Not available in the bundled raster";
-    if (name.includes("亞高山")) return "Subalpine";
-    if (name.includes("高山")) return "Alpine";
-    if (name.includes("上部山地")) return "Upper montane";
-    if (name.includes("下部山地")) return "Lower montane";
-    if (name.includes("山地")) return "Montane";
-    if (name.includes("低地")) return "Lowland";
-    if (name.includes("海岸")) return "Coastal";
+
+    for (const [needle, zone] of ZONE_MATCHERS) {
+      if (name.includes(needle)) {
+        return zone;
+      }
+    }
+
     return "Not available in the bundled raster";
   }
 
@@ -92,7 +101,7 @@
           <dt>Vegetation / ecosystem class</dt>
           <dd>${safeName}</dd>
           <dt>Official source name</dt>
-          <dd>${safeSourceLabel} — ${safeName}</dd>
+          <dd>${safeSourceLabel}</dd>
           <dt>Altitudinal zone</dt>
           <dd>${safeZone}</dd>
           <dt>Source</dt>
@@ -121,7 +130,7 @@
     }
 
     const value = band[row][col];
-    if (value == null || Number.isNaN(value)) {
+    if (!Number.isFinite(value)) {
       return null;
     }
 
