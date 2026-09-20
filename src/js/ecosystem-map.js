@@ -101,11 +101,11 @@
         <dl>
           <dt>Vegetation / ecosystem class</dt>
           <dd>${safeName}</dd>
-          <dt>Official source name</dt>
+          <dt>Official dataset</dt>
           <dd>${safeSourceLabel}</dd>
           <dt>Altitudinal zone</dt>
           <dd>${safeZone}</dd>
-          <dt>Source</dt>
+          <dt>Source agency</dt>
           <dd>${safeSourceName}</dd>
         </dl>
       </div>
