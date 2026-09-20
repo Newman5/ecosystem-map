@@ -42,10 +42,18 @@
 
   const OFFICIAL_CODE_MIN = 12;
 
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
   function describeZone(name) {
     if (!name) return "Not available in the bundled raster";
-    if (name.includes("高山")) return "Alpine";
     if (name.includes("亞高山")) return "Subalpine";
+    if (name.includes("高山")) return "Alpine";
     if (name.includes("上部山地")) return "Upper montane";
     if (name.includes("下部山地")) return "Lower montane";
     if (name.includes("山地")) return "Montane";
@@ -72,18 +80,23 @@
   }
 
   function formatPopup(name, sourceName, sourceLabel) {
+    const safeName = escapeHtml(name);
+    const safeSourceName = escapeHtml(sourceName);
+    const safeSourceLabel = escapeHtml(sourceLabel);
+    const safeZone = escapeHtml(describeZone(name));
+
     return `
       <div class="ecosystem-popup">
-        <h2>${name}</h2>
+        <h2>${safeName}</h2>
         <dl>
           <dt>Vegetation / ecosystem class</dt>
-          <dd>${name}</dd>
+          <dd>${safeName}</dd>
           <dt>Official source name</dt>
-          <dd>${sourceLabel} — ${name}</dd>
+          <dd>${safeSourceLabel} — ${safeName}</dd>
           <dt>Altitudinal zone</dt>
-          <dd>${describeZone(name)}</dd>
+          <dd>${safeZone}</dd>
           <dt>Source</dt>
-          <dd>${sourceName}</dd>
+          <dd>${safeSourceName}</dd>
         </dl>
       </div>
     `;
@@ -159,7 +172,7 @@
       if (!georaster) return;
 
       const code = sampleRaster(georaster, latlng);
-      const className = code >= OFFICIAL_CODE_MIN ? OFFICIAL_CLASSES[code] : null;
+      const className = code >= OFFICIAL_CODE_MIN ? OFFICIAL_CLASSES[code] ?? null : null;
 
       statusElement.textContent = statusText(className, options.placeName);
 
