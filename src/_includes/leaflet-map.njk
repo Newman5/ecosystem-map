@@ -1,0 +1,29 @@
+{% if mapData %}
+  {% set resolvedMapId = mapId or "leaflet-map" %}
+  <section class="map-shell">
+    <div class="map-toolbar">
+      <div class="quick-jumps" aria-label="Reference places">
+        {% for place in app.places %}
+          <button
+            type="button"
+            class="jump-button"
+            data-map-target="{{ resolvedMapId }}"
+            data-lat="{{ place.lat }}"
+            data-lng="{{ place.lng }}"
+            data-zoom="{{ place.zoom or mapData.referenceZoom }}"
+          >
+            {{ place.name }}
+          </button>
+        {% endfor %}
+      </div>
+      <button type="button" class="locate-button" data-locate-map="{{ resolvedMapId }}">Locate me</button>
+    </div>
+
+    <div id="{{ resolvedMapId }}" class="leaflet-map-canvas" aria-label="Taiwan vegetation map"></div>
+    <div class="map-status" id="{{ resolvedMapId }}-status" aria-live="polite">
+      Loading vegetation layer…
+    </div>
+
+    <script type="application/json" id="{{ resolvedMapId }}-config">{{ mapData | json | safe }}</script>
+  </section>
+{% endif %}
