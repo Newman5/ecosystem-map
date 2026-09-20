@@ -41,6 +41,7 @@
   };
 
   const OFFICIAL_CODE_MIN = 12;
+  const ZONE_UNAVAILABLE = "Not available in the bundled raster";
   const ZONE_MATCHERS = [
     ["亞高山", "Subalpine"],
     ["高山", "Alpine"],
@@ -60,7 +61,7 @@
   }
 
   function describeZone(name) {
-    if (!name) return "Not available in the bundled raster";
+    if (!name) return ZONE_UNAVAILABLE;
 
     for (const [needle, zone] of ZONE_MATCHERS) {
       if (name.includes(needle)) {
@@ -68,7 +69,7 @@
       }
     }
 
-    return "Not available in the bundled raster";
+    return ZONE_UNAVAILABLE;
   }
 
   function classColor(name) {
@@ -142,7 +143,7 @@
     const placesElement = document.getElementById(`${container.id}-places`);
     const statusElement = document.getElementById(`${container.id}-status`);
 
-    if (!configElement || !placesElement || typeof parseGeoraster !== "function") {
+    if (!configElement || !placesElement || !statusElement || typeof parseGeoraster !== "function") {
       return;
     }
 
@@ -181,7 +182,7 @@
       if (!georaster) return;
 
       const code = sampleRaster(georaster, latlng);
-      const className = code >= OFFICIAL_CODE_MIN ? OFFICIAL_CLASSES[code] ?? null : null;
+      const className = code !== null && code >= OFFICIAL_CODE_MIN ? OFFICIAL_CLASSES[code] ?? null : null;
 
       statusElement.textContent = statusText(className, options.placeName);
 
