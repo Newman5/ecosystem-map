@@ -107,8 +107,11 @@
 
     const placesLayer = L.layerGroup();
     places.forEach((place) => {
+      const safePlaceName = escapeHtml(place.name);
+      const safePlaceNote = escapeHtml(place.note);
+
       L.marker([place.lat, place.lng])
-        .bindPopup(`<strong>${place.name}</strong><br>${place.note}`)
+        .bindPopup(`<strong>${safePlaceName}</strong><br>${safePlaceNote}`)
         .addTo(placesLayer);
     });
     placesLayer.addTo(map);
