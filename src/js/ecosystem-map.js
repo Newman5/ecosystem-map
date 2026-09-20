@@ -1,56 +1,5 @@
 (function () {
-  const OFFICIAL_CLASSES = {
-    12: "亞高山針葉林",
-    13: "上部山地針葉林",
-    14: "上部山地－山地－下部山地次生針葉林",
-    15: "山地針葉林",
-    16: "上部山地針闊葉混淆林",
-    17: "上部山地－山地－下部山地針闊葉次生混淆林",
-    18: "山地針闊葉混淆林",
-    19: "下部山地針闊葉混淆林",
-    20: "上部山地－山地－下部山地崩塌地次生落葉闊葉林",
-    21: "山地常綠闊葉林",
-    22: "山地常綠闊葉矮林",
-    23: "山地落葉闊葉林",
-    24: "山地－下部山地－低地次生落葉闊葉林",
-    25: "山地－下部山地－低地半落葉闊葉林",
-    26: "下部山地常綠闊葉林",
-    27: "下部山地－低地次生常綠闊葉林",
-    28: "低地常綠闊葉林",
-    29: "低地風衝常綠闊葉矮林",
-    30: "竹林",
-    31: "熱帶海岸林",
-    32: "高山針闊葉灌叢",
-    33: "亞高山－上部山地－山地針闊葉灌叢",
-    34: "下部山地－低地闊葉灌叢",
-    35: "海岸闊葉灌叢",
-    36: "高山草本植群",
-    37: "亞高山－上部山地－山地草本植群",
-    38: "下部山地－低地草本植群",
-    39: "砂丘植群",
-    40: "亞高山－上部山地－山地岩壁及碎石坡植群",
-    41: "下部山地－低地岩壁及碎石坡植群",
-    42: "海岸岩壁植群",
-    43: "人工林",
-    44: "耕地",
-    45: "建地",
-    46: "天然裸露地",
-    47: "水域",
-    48: "公園、墓地",
-    49: "人工裸露地",
-  };
-
   const OFFICIAL_CODE_MIN = 12;
-  const ZONE_UNAVAILABLE = "Not available in the bundled raster";
-  const ZONE_MATCHERS = [
-    ["亞高山", "Subalpine"],
-    ["高山", "Alpine"],
-    ["上部山地", "Upper montane"],
-    ["下部山地", "Lower montane"],
-    ["山地", "Montane"],
-    ["低地", "Lowland"],
-    ["海岸", "Coastal"],
-  ];
 
   function escapeHtml(value) {
     return String(value)
@@ -60,62 +9,37 @@
       .replaceAll('"', "&quot;");
   }
 
-  function describeZone(name) {
-    if (!name) return ZONE_UNAVAILABLE;
-
-    for (const [needle, zone] of ZONE_MATCHERS) {
-      if (name.includes(needle)) {
-        return zone;
-      }
-    }
-
-    return ZONE_UNAVAILABLE;
-  }
-
-  function classColor(name) {
-    if (!name) return null;
-    if (name.includes("水域")) return "#4f7cff";
-    if (name.includes("建地")) return "#676d73";
-    if (name.includes("耕地")) return "#c6a766";
-    if (name.includes("裸露")) return "#9f8c6f";
-    if (name.includes("岩壁")) return "#8f8475";
-    if (name.includes("草本")) return "#d9d96b";
-    if (name.includes("灌叢")) return "#c68d2d";
-    if (name.includes("竹林")) return "#7bbf59";
-    if (name.includes("人工林")) return "#3f8f71";
-    if (name.includes("混淆林")) return "#5d8f4a";
-    if (name.includes("針葉林")) return "#2f6f44";
-    if (name.includes("闊葉林")) return "#5aa053";
-    return "#4a8d4d";
-  }
-
-  function formatPopup(name, sourceName, sourceLabel) {
-    const safeName = escapeHtml(name);
+  function formatPopup(classification, sourceName) {
+    const safeEnglishName = escapeHtml(classification.englishName);
+    const safeOfficialName = escapeHtml(classification.officialName);
+    const safeFamily = escapeHtml(classification.family);
+    const safeDerivedZone = escapeHtml(classification.derivedAltitudinalZone);
     const safeSourceName = escapeHtml(sourceName);
-    const safeSourceLabel = escapeHtml(sourceLabel);
-    const safeZone = escapeHtml(describeZone(name));
 
     return `
       <div class="ecosystem-popup">
-        <h2>${safeName}</h2>
+        <h2>${safeEnglishName}</h2>
         <dl>
-          <dt>Vegetation / ecosystem class</dt>
-          <dd>${safeName}</dd>
-          <dt>Official dataset</dt>
-          <dd>${safeSourceLabel}</dd>
-          <dt>Altitudinal zone</dt>
-          <dd>${safeZone}</dd>
-          <dt>Source agency</dt>
+          <dt>Plain-language name</dt>
+          <dd>${safeEnglishName}</dd>
+          <dt>Official classification</dt>
+          <dd>${safeOfficialName}</dd>
+          <dt>Ecological family</dt>
+          <dd>${safeFamily}</dd>
+          <dt>Derived altitudinal zone</dt>
+          <dd>${safeDerivedZone}</dd>
+          <dt>Source</dt>
           <dd>${safeSourceName}</dd>
         </dl>
       </div>
     `;
   }
 
-  function statusText(name, placeName) {
-    if (name) {
-      return `${placeName ? `${placeName}: ` : ""}${name}`;
+  function statusText(classification, placeName) {
+    if (classification) {
+      return `${placeName ? `${placeName}: ` : ""}${classification.englishName} / ${classification.officialName}`;
     }
+
     return placeName
       ? `${placeName}: no official vegetation class is available at the exact sampled cell. Try a nearby natural slope.`
       : "No official vegetation class is available at the exact sampled cell. Try a nearby natural slope.";
@@ -138,21 +62,38 @@
     return Math.round(value);
   }
 
+  function sameFilter(a, b) {
+    return a.type === b.type && a.code === b.code && a.familyKey === b.familyKey;
+  }
+
   async function buildMap(container) {
     const configElement = document.getElementById(`${container.id}-config`);
     const placesElement = document.getElementById(`${container.id}-places`);
+    const vegetationElement = document.getElementById(`${container.id}-vegetation`);
     const statusElement = document.getElementById(`${container.id}-status`);
 
-    if (!configElement || !placesElement || !statusElement || typeof parseGeoraster !== "function") {
+    if (!configElement || !placesElement || !vegetationElement || !statusElement || typeof parseGeoraster !== "function") {
       return;
     }
 
     const config = JSON.parse(configElement.textContent);
     const places = JSON.parse(placesElement.textContent);
+    const vegetationClasses = JSON.parse(vegetationElement.textContent);
+    const vegetationByCode = new Map(vegetationClasses.map((item) => [item.code, item]));
+    const familyCodeMap = vegetationClasses.reduce((map, item) => {
+      if (!map.has(item.familyKey)) {
+        map.set(item.familyKey, new Set());
+      }
+
+      map.get(item.familyKey).add(item.code);
+      return map;
+    }, new Map());
+
+    const legendButtons = Array.from(document.querySelectorAll(`[data-map-legend="${container.id}"]`));
     const map = L.map(container.id).setView([config.center.lat, config.center.lng], config.zoom);
 
     const basemaps = {};
-    Object.entries(config.basemaps || {}).forEach(([key, tileConfig], index) => {
+    Object.entries(config.basemaps || {}).forEach(([, tileConfig], index) => {
       basemaps[tileConfig.name] = L.tileLayer(tileConfig.url, {
         attribution: tileConfig.attribution,
         maxZoom: tileConfig.maxZoom || config.maxZoom || 18,
@@ -174,19 +115,84 @@
     let georaster;
     let vegetationLayer;
     let userMarker;
+    let activeFilter = { type: "all", code: null, familyKey: null };
 
     const sourceName = config.vegetation.sourceName;
-    const sourceLabel = config.vegetation.sourceLabel;
+
+    function activeCodeSet() {
+      if (activeFilter.type === "class" && activeFilter.code !== null) {
+        return new Set([activeFilter.code]);
+      }
+
+      if (activeFilter.type === "family" && activeFilter.familyKey) {
+        return familyCodeMap.get(activeFilter.familyKey) || new Set();
+      }
+
+      return null;
+    }
+
+    function classIsVisible(code) {
+      const visibleCodes = activeCodeSet();
+      return visibleCodes ? visibleCodes.has(code) : true;
+    }
+
+    function updateLegendState() {
+      legendButtons.forEach((button) => {
+        const buttonType = button.dataset.filterType;
+        let isActive = false;
+
+        if (buttonType === "all") {
+          isActive = activeFilter.type === "all";
+        } else if (buttonType === "class") {
+          isActive = activeFilter.type === "class" && Number(button.dataset.code) === activeFilter.code;
+        } else if (buttonType === "family") {
+          isActive = activeFilter.type === "family" && button.dataset.family === activeFilter.familyKey;
+        }
+
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+    }
+
+    function setFilter(nextFilter) {
+      activeFilter = nextFilter;
+
+      if (vegetationLayer) {
+        vegetationLayer.redraw();
+      }
+
+      updateLegendState();
+
+      if (activeFilter.type === "all") {
+        statusElement.textContent = "Showing all vegetation classes. Click the map or use Locate me.";
+        return;
+      }
+
+      if (activeFilter.type === "class") {
+        const classification = vegetationByCode.get(activeFilter.code);
+        statusElement.textContent = classification
+          ? `Showing only ${classification.englishName} / ${classification.officialName}.`
+          : "Showing a single vegetation class.";
+        return;
+      }
+
+      if (activeFilter.type === "family") {
+        const family = vegetationClasses.find((item) => item.familyKey === activeFilter.familyKey);
+        statusElement.textContent = family
+          ? `Showing only ${family.family}.`
+          : "Showing one ecological family.";
+      }
+    }
 
     function inspectLocation(latlng, options = {}) {
       if (!georaster) return;
 
       const code = sampleRaster(georaster, latlng);
-      const className = code !== null && code >= OFFICIAL_CODE_MIN ? OFFICIAL_CLASSES[code] ?? null : null;
+      const classification = code !== null && code >= OFFICIAL_CODE_MIN ? vegetationByCode.get(code) ?? null : null;
 
-      statusElement.textContent = statusText(className, options.placeName);
+      statusElement.textContent = statusText(classification, options.placeName);
 
-      if (!className) {
+      if (!classification) {
         if (options.keepPopup) {
           L.popup()
             .setLatLng(latlng)
@@ -198,7 +204,7 @@
 
       L.popup()
         .setLatLng(latlng)
-        .setContent(formatPopup(className, sourceName, sourceLabel))
+        .setContent(formatPopup(classification, sourceName))
         .openOn(map);
     }
 
@@ -214,11 +220,17 @@
       georaster,
       opacity: config.vegetation.opacity || 0.75,
       pixelValuesToColorFn: ([value]) => {
-        if (value == null || Number.isNaN(value) || value < OFFICIAL_CODE_MIN) {
+        if (!Number.isFinite(value) || value < OFFICIAL_CODE_MIN) {
           return null;
         }
 
-        return classColor(OFFICIAL_CLASSES[Math.round(value)]);
+        const roundedValue = Math.round(value);
+        const classification = vegetationByCode.get(roundedValue);
+        if (!classification || !classIsVisible(roundedValue)) {
+          return null;
+        }
+
+        return classification.color;
       },
       resolution: 128,
     });
@@ -231,7 +243,8 @@
     };
 
     L.control.layers(basemaps, overlays, { collapsed: false }).addTo(map);
-    statusElement.textContent = "Vegetation layer ready. Click the map or use Locate me.";
+    updateLegendState();
+    statusElement.textContent = "Showing all vegetation classes. Click the map, tap the legend, or use Locate me.";
 
     map.on("click", (event) => inspectLocation(event.latlng, { keepPopup: true }));
 
@@ -242,6 +255,30 @@
         const zoom = Number(button.dataset.zoom || config.referenceZoom || 11);
         map.setView([lat, lng], zoom);
         inspectLocation({ lat, lng }, { keepPopup: true, placeName: button.textContent.trim() });
+      });
+    });
+
+    legendButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filterType = button.dataset.filterType;
+
+        if (filterType === "all") {
+          setFilter({ type: "all", code: null, familyKey: null });
+          return;
+        }
+
+        if (filterType === "class") {
+          const code = Number(button.dataset.code);
+          const nextFilter = { type: "class", code, familyKey: null };
+          setFilter(sameFilter(activeFilter, nextFilter) ? { type: "all", code: null, familyKey: null } : nextFilter);
+          return;
+        }
+
+        if (filterType === "family") {
+          const familyKey = button.dataset.family;
+          const nextFilter = { type: "family", code: null, familyKey };
+          setFilter(sameFilter(activeFilter, nextFilter) ? { type: "all", code: null, familyKey: null } : nextFilter);
+        }
       });
     });
 

@@ -19,11 +19,71 @@
       <button type="button" class="locate-button" data-locate-map="{{ resolvedMapId }}">Locate me</button>
     </div>
 
+    <section class="legend-panel" aria-labelledby="{{ resolvedMapId }}-legend-title">
+      <div class="legend-header">
+        <div>
+          <h2 id="{{ resolvedMapId }}-legend-title">Vegetation legend</h2>
+          <p>Tap a family or class to isolate it on the map. English labels are plain-language translations for field readability.</p>
+        </div>
+        <button type="button" class="legend-reset-button" data-filter-type="all" data-map-legend="{{ resolvedMapId }}">
+          Show all
+        </button>
+      </div>
+
+      <div class="legend-sections">
+        {% for section in app.vegetation.sections %}
+          <section class="legend-section" aria-labelledby="{{ resolvedMapId }}-{{ section.key }}-title">
+            <div class="legend-section-header">
+              <h3 id="{{ resolvedMapId }}-{{ section.key }}-title">{{ section.title }}</h3>
+              <p>{{ section.description }}</p>
+            </div>
+
+            {% for family in section.families %}
+              <div class="legend-family">
+                <div class="legend-family-header">
+                  <button
+                    type="button"
+                    class="legend-family-button"
+                    data-filter-type="family"
+                    data-map-legend="{{ resolvedMapId }}"
+                    data-family="{{ family.key }}"
+                  >
+                    {{ family.name }}
+                  </button>
+                </div>
+
+                <ul class="legend-class-list">
+                  {% for item in family.classes %}
+                    <li>
+                      <button
+                        type="button"
+                        class="legend-class-button"
+                        data-filter-type="class"
+                        data-map-legend="{{ resolvedMapId }}"
+                        data-code="{{ item.code }}"
+                      >
+                        <span class="legend-swatch" style="--legend-color: {{ item.color }};"></span>
+                        <span class="legend-labels">
+                          <span class="legend-english">{{ item.englishName }}</span>
+                          <span class="legend-chinese">{{ item.officialName }}</span>
+                        </span>
+                      </button>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endfor %}
+          </section>
+        {% endfor %}
+      </div>
+    </section>
+
     <div id="{{ resolvedMapId }}" class="leaflet-map-canvas" aria-label="Taiwan vegetation map"></div>
     <div class="map-status" id="{{ resolvedMapId }}-status" aria-live="polite">
       Loading vegetation layer…
     </div>
 
     <script type="application/json" id="{{ resolvedMapId }}-config">{{ mapData | json | safe }}</script>
+    <script type="application/json" id="{{ resolvedMapId }}-vegetation">{{ app.vegetation.classes | json | safe }}</script>
   </section>
 {% endif %}

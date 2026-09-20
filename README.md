@@ -12,6 +12,8 @@ The Taiwan prototype uses Leaflet plus a bundled local vegetation raster so the 
 - uses Leaflet with OpenStreetMap as the default basemap
 - adds an alternate Taiwan topographic basemap from the National Land Surveying and Mapping Center
 - overlays a Taiwan vegetation / ecosystem layer
+- shows a visible legend grouped into natural ecosystems and other source classes
+- lets you isolate a single vegetation class or ecological family on the map
 - lets you click the map to inspect the vegetation class at that location
 - includes a **Locate me** button that drops a user marker and identifies the class at the current point when possible
 - includes quick-jump reference places for:
@@ -34,6 +36,14 @@ It is based on the official Taiwan vegetation classification schema used by the 
 - official source fields include values such as `FORMATION`, `CLASS`, `SUBCLASS`, `ALTI_ZONE`, and `AREA_HA`
 
 For this static-hosted MVP, the browser-friendly raster preserves the official `FORMATION` classes used in the source dataset and hides non-official fallback classes in the map overlay.
+
+The UI also adds:
+
+- plain-language English labels for map readability
+- a grouped legend for ecological exploration
+- class/family filtering for quickly seeing where a vegetation type occurs
+
+These English labels are project-side plain-language translations for the current prototype; the original official Chinese classification is preserved and shown in the popup and legend.
 
 ### Basemaps
 
@@ -100,7 +110,8 @@ Typical approach:
 
 - The vegetation layer is raster-based for MVP simplicity, so inspection is cell-based rather than true polygon popups.
 - The overlay intentionally hides non-official fallback classes that may exist in the bundled raster outside the official vegetation class range.
-- The current popup focuses on the official classification label; it does not yet expose every source attribute from the original polygon dataset.
+- The map uses structured class metadata and a legend to make the raster readable, but the underlying MVP is still raster-based rather than polygon-based.
+- The popup now distinguishes a plain-language English name from the official Chinese classification, but the English labels are still project-side translations rather than source-supplied English fields.
 - Browser geolocation depends on user permission and HTTPS in production.
 - A future data refresh should replace the bundled raster with a directly generated export from the official source archive.
 

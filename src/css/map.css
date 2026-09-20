@@ -40,6 +40,159 @@ body {
   gap: 0.75rem;
 }
 
+.legend-panel {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.legend-header {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.legend-header h2,
+.legend-section-header h3 {
+  margin: 0;
+}
+
+.legend-header p,
+.legend-section-header p {
+  margin: 0.3rem 0 0;
+  color: #35503d;
+}
+
+.legend-reset-button {
+  border: 1px solid var(--border);
+  background: white;
+  color: #12301b;
+  border-radius: 999px;
+  padding: 0.65rem 0.95rem;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.legend-reset-button:hover,
+.legend-reset-button:focus-visible {
+  background: #eef5ec;
+  border-color: #b8c8b5;
+}
+
+.legend-reset-button.is-active {
+  background: #12301b;
+  color: white;
+  border-color: #12301b;
+}
+
+.legend-sections {
+  display: grid;
+  gap: 1rem;
+}
+
+.legend-section {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.legend-family {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.legend-family-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.legend-family-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--accent-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.legend-family-button:hover,
+.legend-family-button:focus-visible {
+  color: #0f2f1a;
+}
+
+.legend-family-button.is-active {
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.legend-class-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.legend-class-button {
+  width: 100%;
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  background: #fbfcfa;
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.legend-class-button:hover,
+.legend-class-button:focus-visible {
+  background: #f3f8f2;
+  border-color: #adc0ab;
+}
+
+.legend-class-button.is-active {
+  border-color: var(--accent-strong);
+  background: #eaf3e8;
+  box-shadow: inset 0 0 0 1px var(--accent-strong);
+}
+
+.legend-swatch {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 999px;
+  margin-top: 0.15rem;
+  background: var(--legend-color);
+  flex: 0 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.legend-labels {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.legend-english {
+  font-weight: 700;
+}
+
+.legend-chinese {
+  color: #375442;
+  font-size: 0.95rem;
+}
+
 .map-toolbar {
   display: flex;
   gap: 0.75rem;
@@ -120,5 +273,13 @@ body {
 
   .leaflet-map-canvas {
     min-height: 68vh;
+  }
+
+  .legend-panel {
+    padding: 0.85rem;
+  }
+
+  .legend-class-list {
+    grid-template-columns: 1fr;
   }
 }
