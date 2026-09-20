@@ -253,6 +253,14 @@ body {
   font-size: 1.05rem;
 }
 
+.ecosystem-popup-kicker {
+  margin: 0 0 0.2rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #48624f;
+}
+
 .ecosystem-popup dl {
   margin: 0;
 }

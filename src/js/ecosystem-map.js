@@ -18,10 +18,9 @@
 
     return `
       <div class="ecosystem-popup">
+        <p class="ecosystem-popup-kicker">Plain-language name</p>
         <h2>${safeEnglishName}</h2>
         <dl>
-          <dt>Plain-language name</dt>
-          <dd>${safeEnglishName}</dd>
           <dt>Official classification</dt>
           <dd>${safeOfficialName}</dd>
           <dt>Ecological family</dt>
@@ -93,13 +92,15 @@
     const map = L.map(container.id).setView([config.center.lat, config.center.lng], config.zoom);
 
     const basemaps = {};
-    Object.entries(config.basemaps || {}).forEach(([, tileConfig], index) => {
+    const defaultBasemapKey = Object.keys(config.basemaps || {})[0];
+
+    Object.entries(config.basemaps || {}).forEach(([key, tileConfig]) => {
       basemaps[tileConfig.name] = L.tileLayer(tileConfig.url, {
         attribution: tileConfig.attribution,
         maxZoom: tileConfig.maxZoom || config.maxZoom || 18,
       });
 
-      if (index === 0) {
+      if (key === defaultBasemapKey) {
         basemaps[tileConfig.name].addTo(map);
       }
     });

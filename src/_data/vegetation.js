@@ -1,4 +1,4 @@
-const ENGLISH_NAME_TYPE = "plain-language translation";
+const ENGLISH_NAME_TYPE = "plain-language translations";
 
 const FAMILY_ORDER = [
   {
@@ -400,7 +400,6 @@ const CLASSES = [
   },
 ].map((item) => ({
   ...item,
-  englishNameType: ENGLISH_NAME_TYPE,
   family: FAMILY_MAP[item.familyKey].name,
 }));
 
