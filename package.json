@@ -1,0 +1,25 @@
+{
+  "name": "ecosystem-map",
+  "version": "1.0.0",
+  "description": "A map that answers \"I am hiking here. What ecosystem am I in?\"",
+  "scripts": {
+    "build": "eleventy",
+    "start": "eleventy --serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Newman5/ecosystem-map.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6"
+  },
+  "dependencies": {
+    "georaster": "^1.6.0",
+    "georaster-layer-for-leaflet": "^4.1.2",
+    "js-yaml": "^4.3.2",
+    "leaflet": "^1.9.4"
+  }
+}

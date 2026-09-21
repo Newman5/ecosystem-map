@@ -1,0 +1,24 @@
+map:
+  center:
+    lat: 23.8
+    lng: 121.0
+  zoom: 7
+  referenceZoom: 11
+  maxZoom: 18
+  basemaps:
+    osm:
+      name: OpenStreetMap
+      url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      maxZoom: 19
+    emap:
+      name: Taiwan EMAP
+      url: https://wmts.nlsc.gov.tw/wmts/EMAP/default/GoogleMapsCompatible/{z}/{y}/{x}
+      attribution: '&copy; <a href="https://maps.nlsc.gov.tw/" target="_blank" rel="noreferrer">內政部國土測繪中心</a>'
+      maxZoom: 20
+  vegetation:
+    name: Taiwan vegetation / ecosystem layer
+    rasterUrl: /data/taiwan-vegetation-mvp.tif
+    opacity: 0.72
+    sourceName: Taiwan Forestry and Nature Conservation Agency / 林業及自然保育署
+    sourceLabel: 臺灣現生天然植群圖（ACO0301000011021）

@@ -1,0 +1,25 @@
+- name: Lalashan / 拉拉山
+  lat: 24.7025
+  lng: 121.4324
+  zoom: 12
+  note: Try clicking nearby forested slopes for an official vegetation class.
+- name: Baling / 巴陵
+  lat: 24.6789
+  lng: 121.3907
+  zoom: 12
+  note: This point sits near bamboo and montane vegetation in the bundled layer.
+- name: Puli / 埔里
+  lat: 23.9659
+  lng: 120.9675
+  zoom: 11
+  note: Puli town is a useful valley reference point before exploring nearby mountain slopes.
+- name: Qingjing / 清境
+  lat: 24.0462
+  lng: 121.1609
+  zoom: 12
+  note: Use this as a jump point to inspect nearby montane grassland and shrub zones.
+- name: Hehuanshan / 合歡山
+  lat: 24.1426
+  lng: 121.2813
+  zoom: 12
+  note: High-elevation terrain here is useful for subalpine classes.
